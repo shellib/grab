@@ -6,7 +6,7 @@
 # - or
 # - hasflag
 # - readopt
-source $(shellib github.com/shellib/cli)
+source $(grab github.com/shellib/cli)
 
 help=$(hasflag --help $*)
 greeting=$(or $(readopt --greeting $*) "Hello World!")

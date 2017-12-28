@@ -84,7 +84,6 @@ test_find_organization() {
 }
 
 test_find_repository() {
-	echo "test find repository"
 	assert_equals "repo" $(find_repository "github.com/org/repo")
 	assert_equals "my-repo" $(find_repository "github.com/my-org/my-repo")
 	assert_equals "my-repo" $(find_repository "github.com/my-org/my-repo@master")

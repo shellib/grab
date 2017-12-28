@@ -2,6 +2,11 @@
 
 A simple tool that allows you to grab and reuse shell libraries from git repositories.
 
+### What is a shell library
+
+A shell library is actually a `shell script` that contains functions that you can `source` and reuse inside your own scripts.
+By convention this tool assumes that the script is called `library.sh` but you can be explicit and choose any script you'd like (see below).
+
 ## Features
 
 - Loading shell libraries

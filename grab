@@ -34,7 +34,7 @@ find_repository() {
 
 find_path() {
 	echo -n "."
-	echo $1 | sed -E "s/$FULL_REGEX/\4/"
+  echo $1 | sed -E "s/$FULL_REGEX/\4/"
 }
 
 find_version() {
@@ -46,6 +46,22 @@ find_version() {
 	else
 		echo $version
 	fi
+}
+
+find_library_path() {
+    local path=$1
+    local filename=$LIBFILE_NAME;
+
+    if [ -f $path ]; then
+        filename=$(echo $path | awk -F "/" '{print $NF}')
+        path=$(dirname $path)
+    fi
+
+	  pushd $path
+	  if [ -f "$filename" ]; then
+		    realpath $filename
+	  fi
+	  popd
 }
 
 # Utils
@@ -72,15 +88,23 @@ assert_equals() {
 test_find_host() {
 	assert_equals "github.com" $(find_host "github.com/org/repo")
 	assert_equals "github.com" $(find_host "github.com/my-org/my-repo")
+	assert_equals "github.com" $(find_host "github.com/my-org/my-repo/path")
+	assert_equals "github.com" $(find_host "github.com/my-org/my-repo/path/myscript.sh")
 	assert_equals "github.com" $(find_host "github.com/my-org/my-repo@master")
 	assert_equals "github.com" $(find_host "github.com/my-org/my-repo@5.0.0")
+	assert_equals "github.com" $(find_host "github.com/my-org/my-repo/path@5.0.0")
+	assert_equals "github.com" $(find_host "github.com/my-org/my-repo/path/myscript.sh@5.0.0")
 }
 
 test_find_organization() {
 	assert_equals "org" $(find_organization "github.com/org/repo")
 	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo")
+	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo/path")
+	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo/path/myscript.sh")
 	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo@master")
 	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo@5.0.0")
+	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo/path/@5.0.0")
+	assert_equals "my-org" $(find_organization "github.com/my-org/my-repo/path/myscript.sh@5.0.0")
 }
 
 test_find_repository() {
@@ -94,8 +118,10 @@ test_find_path() {
 	assert_equals "." $(find_path "github.com/org/repo")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dir1")
 	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2")
+	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dir1@master")
 	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2@master")
+	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh@master")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repoi/dir1@5.0.0")
 }
 
@@ -105,6 +131,7 @@ test_find_version() {
 	assert_equals "master" $(find_version "github.com/my-org/my-repo@master")
 	assert_equals "5.0.0" $(find_version "github.com/my-org/my-repo@5.0.0")
 }
+
 
 if [ -z "$1" ]; then
 	exit 0;
@@ -129,24 +156,16 @@ clone_url=$(to_clone_url $host $organization $repository)
 mkdir -p $GRAB_HOME/$organization/$repository
 pushd $GRAB_HOME/$organization/$repository
 
-if [ -d $version ]; then 
+if [ -d $version ]; then
 	# If version branch already exists, just rebase
 	pushd $version
 	git pull --rebase origin $version > /dev/null 2> /dev/null
-	pushd $path
-	if [ -f "$LIBFILE_NAME" ]; then
-		realpath $LIBFILE_NAME
-	fi
-	popd
+  echo $(find_library_path $path)
 	popd
 else
 	#Clone the repository
 	git clone -b $version --single-branch $clone_url $GRAB_HOME/$organization/$repository/$version > /dev/null 2> /dev/null
 	pushd $version
-	pushd $path
-	if [ -f "$LIBFILE_NAME" ]; then
-		realpath $LIBFILE_NAME
-	fi
-	popd
+  echo $(find_library_path $path)
 	popd
 fi

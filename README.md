@@ -1,6 +1,6 @@
-# Shell Lib
+# Grab
 
-A simple tool that allows you to reuse shell libraries from git repositories.
+A simple tool that allows you to grab and reuse shell libraries from git repositories.
 
 ## Features
 
@@ -13,7 +13,7 @@ A simple tool that allows you to reuse shell libraries from git repositories.
 This tool is meant to download and store the library localy, so that it can be easily imported with the `source` command.
 So the general use of the tool is:
 
-    source $(shellib <git repository>)
+    source $(grab <git repository>)
     
 Where the git repository format is: `<host>/<organization>/<repository>/<path>@<branch>`.
 
@@ -23,7 +23,7 @@ This will clone the library under `$HOME/.shelllib/<organization>/<repository>/<
 
 For example to load the `shellib cli library` from github:
 
-    source $(shellib github.com/shellib/cli)
+    source $(grab github.com/shellib/cli)
     
 This will clone the library under `$HOME/.shelllib/shellib/cli/master` and import it to your script.
 
@@ -31,8 +31,8 @@ This will clone the library under `$HOME/.shelllib/shellib/cli/master` and impor
 
 Using curl:
 
-    curl -s https://raw.githubusercontent.com/shellib/shellib/master/install.sh | bash
+    curl -s https://raw.githubusercontent.com/shellib/grab/master/install.sh | bash
 
 or using wget:
 
-    wget -q -O - https://raw.githubusercontent.com/shellib/shellib/master/install.sh | bash
+    wget -q -O - https://raw.githubusercontent.com/shellib/grab/master/install.sh | bash

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SHELLIB_HOME=$HOME/.shellib
+GRAB_HOME=$HOME/.shellib
 
 LIBFILE_NAME="library.sh"
 
@@ -38,7 +38,7 @@ find_path() {
 }
 
 find_version() {
-	local version=`echo $1 | awk -F "@" '{print $NF}'`	
+	local version=`echo $1 | awk -F "@" '{print $NF}'`
 	if [ "$version" == "$1" ]; then
 		echo "master"
 	elif [ -z "$version" ]; then
@@ -126,8 +126,8 @@ version=$(find_version $1)
 path=$(find_path $1)
 clone_url=$(to_clone_url $host $organization $repository)
 
-mkdir -p $SHELLIB_HOME/$organization/$repository
-pushd $SHELLIB_HOME/$organization/$repository
+mkdir -p $GRAB_HOME/$organization/$repository
+pushd $GRAB_HOME/$organization/$repository
 
 if [ -d $version ]; then 
 	# If version branch already exists, just rebase
@@ -141,7 +141,7 @@ if [ -d $version ]; then
 	popd
 else
 	#Clone the repository
-	git clone -b $version --single-branch $clone_url $SHELLIB_HOME/$organization/$repository/$version > /dev/null 2> /dev/null
+	git clone -b $version --single-branch $clone_url $GRAB_HOME/$organization/$repository/$version > /dev/null 2> /dev/null
 	pushd $version
 	pushd $path
 	if [ -f "$LIBFILE_NAME" ]; then

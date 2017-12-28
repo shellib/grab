@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Let's load the a shell library from: github.com/shellib/cli
+# That provides the following functions:
+#
+# - or
+# - hasflag
+# - readopt
 source $(shellib github.com/shellib/cli)
 
 help=$(hasflag --help $*)

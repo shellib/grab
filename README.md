@@ -17,7 +17,7 @@ So the general use of the tool is:
     
 Where the git repository format is: `<host>/<organization>/<repository>/<path>@<branch>`.
 
-This will clone the library under `$HOME/.shelllib/<organization>/<repository</<version>` and import it to your script.
+This will clone the library under `$HOME/.shelllib/<organization>/<repository>/<version>` and import it to your script.
         
 ### Usage Example:        
 
@@ -25,7 +25,7 @@ For example to load the `shellib cli library` from github:
 
     source $(shellib github.com/shellib/cli)
     
-This will clone the library under `$HOME/.shelllib/shellib/cli</master` and import it to your script.
+This will clone the library under `$HOME/.shelllib/shellib/cli/master` and import it to your script.
 
 ## Installation
 

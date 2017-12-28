@@ -26,3 +26,13 @@ For example to load the `shellib cli library` from github:
     source $(shellib github.com/shellib/cli)
     
 This will clone the library under `$HOME/.shelllib/shellib/cli</master` and import it to your script.
+
+## Installation
+
+Using curl:
+
+    curl -s https://raw.githubusercontent.com/shellib/shellib/master/install.sh | bash
+
+or using wget:
+
+    wget -q -O - https://raw.githubusercontent.com/shellib/shellib/master/install.sh | bash

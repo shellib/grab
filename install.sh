@@ -1,8 +1,10 @@
 #!/bin/bash
 
+GRAB_URL="https://raw.githubusercontent.com/shellib/grab/master/grab.sh"
+GRAB_URL="https://raw.githubusercontent.com/shellib/grab/master/grab.sh"
 download() {
     if $(type curl &> /dev/null); then
-        curl -o $2 $1
+        curl -s -o $2 $1
     elif $(type wget &> /dev/null); then
         wget -O $2 $1
     else
@@ -18,20 +20,28 @@ check_exists() {
     fi
 }
 
-GRAB_URL="https://raw.githubusercontent.com/shellib/grab/master/grab"
+install() {
+    echo "Installing grab..."
+    check_exists
 
-check_exists
+    #1. Try at $HOME/bin if exists
+    if [ -d $HOME/bin ]; then
+        download $GRAB_URL $HOME/bin/grab
+        chmod +x $HOME/bin/grab
+    fi
 
-#1. Try at $HOME/bin if exists
-if [ -d $HOME/bin ]; then
-    download $GRAB_URL $HOME/bin/grab
-    chmod +x $HOME/bin/grab
+    check_exists
+
+    #2. Try at /usr/local/bin
+    if [ -d /usr/local/bin ]; then
+        download $GRAB_URL /usr/local/bin/grab
+        chmod +x /usr/local/bin/grab
+    fi
+}
+
+#Only run install if script is not sourced (for unit test shake)
+if [ "${BASH_SOURCE[0]}" == "${0}" ] || [ "${BASH_SOURCE[0]}" == "" ]; then
+    install
 fi
 
-check_exists
 
-#2. Try at /usr/local/bin
-if [ -d /usr/local/bin ]; then
-    download $GRAB_URL /usr/local/bin/grab
-    chmod +x /usr/local/bin/grab
-fi

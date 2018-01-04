@@ -1,6 +1,5 @@
 #!/bin/bash
 
-GRAB_HOME=$HOME/.shellib
 
 LIBFILE_NAME="library.sh"
 
@@ -116,7 +115,7 @@ test_find_repository() {
 
 test_find_path() {
 	assert_equals "." $(find_path "github.com/org/repo")
-	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dir1")
+	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dihttps://syndesis.192.168.42.135.nip.ior1")
 	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2")
 	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dir1@master")
@@ -153,8 +152,10 @@ version=$(find_version $1)
 path=$(find_path $1)
 clone_url=$(to_clone_url $host $organization $repository)
 
-mkdir -p $GRAB_HOME/$organization/$repository
-pushd $GRAB_HOME/$organization/$repository
+shellib_home${SHELLIB_HOME:=$HOME/.shellib}
+
+mkdir -p $shellib_home/$organization/$repository
+pushd $shellib_home/$organization/$repository
 
 if [ -d $version ]; then
 	# If version branch already exists, just rebase
@@ -164,7 +165,7 @@ if [ -d $version ]; then
 	popd
 else
 	#Clone the repository
-	git clone -b $version --single-branch $clone_url $GRAB_HOME/$organization/$repository/$version > /dev/null 2> /dev/null
+	git clone -b $version --single-branch $clone_url $shellib_home/$organization/$repository/$version > /dev/null 2> /dev/null
 	pushd $version
   echo $(find_library_path $path)
 	popd

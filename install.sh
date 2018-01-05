@@ -43,5 +43,3 @@ install() {
 if [ "${BASH_SOURCE[0]}" == "${0}" ] || [ "${BASH_SOURCE[0]}" == "" ]; then
     install
 fi
-
-

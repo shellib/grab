@@ -152,7 +152,7 @@ version=$(find_version $1)
 path=$(find_path $1)
 clone_url=$(to_clone_url $host $organization $repository)
 
-shellib_home${SHELLIB_HOME:=$HOME/.shellib}
+shellib_home=${SHELLIB_HOME:=$HOME/.shellib}
 
 mkdir -p $shellib_home/$organization/$repository
 pushd $shellib_home/$organization/$repository

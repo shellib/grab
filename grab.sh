@@ -117,10 +117,10 @@ test_find_path() {
 	assert_equals "." $(find_path "github.com/org/repo")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dir1")
 	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2")
-	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh")
+	assert_equals "./dir1/dir2/myscript.sh" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repo/dir1@master")
 	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2@master")
-	assert_equals "./dir1/dir2" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh@master")
+	assert_equals "./dir1/dir2/myscript.sh" $(find_path "github.com/my-org/my-repo/dir1/dir2/myscript.sh@master")
 	assert_equals "./dir1" $(find_path "github.com/my-org/my-repoi/dir1@5.0.0")
 }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GRAB_URL="https://raw.githubusercontent.com/shellib/grab/master/grab.sh"
-GRAB_URL="https://raw.githubusercontent.com/shellib/grab/master/grab.sh"
+
 download() {
     if $(type curl &> /dev/null); then
         curl -s -o $2 $1

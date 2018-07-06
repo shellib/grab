@@ -62,4 +62,13 @@ Then your code will be able to access all the functions provided by the library 
     
 In order to access the `hasflag` function you now need to use `cli::hasflag`.
 
+### Troubleshooting
+
+Prefixing function names with an alias has its limitations. As a global `find and replace` is used (with word boundaries) is taking place to prefix functions, there is a chance that unwanted replacements happen.
+To avoid those, you can prefix the function that is causing this issue with `double underscore`. For example:
+
+    function __release() {
+        mvn release:clean
+    }
+
 Note: Using the `::` as a separator between the alias and the function is convention and not a language feature. The particular convention is influenced by [Roland Huss](https://github.com/rhuss) coding style.

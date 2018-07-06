@@ -9,6 +9,8 @@ REPO_REGEX="[a-zA-Z0-9_\-]+"
 PATH_REGEX="[a-zA-Z0-9_\.\-\/]*"
 VERSION_REGEX="[a-zA-Z0-9\.\-]+"
 
+FUNCTION_PATTERN='^[[:space:]]*([[:alnum:]_]+[[:space:]]*\(\)|function[[:space:]]+[[:alnum:]_]+)'
+
 FULL_REGEX="($HOST_REGEX)\/($ORG_REGEX)\/($REPO_REGEX)($PATH_REGEX)?([@]$VERSION_REGEX)?"
 
 #
@@ -65,21 +67,43 @@ find_library_path() {
 
 translate_as() {
     local script=$1
+    local prefix=""
+    local separator=""
+    local source=`basename $script | cut -d "." -f1`
+    local dir=`dirname $script`
+    local target="$script"
+
+    local tmp_dir=$(mktemp -d /tmp/grab-alias.XXXXXXXX)
+    local tmp_source=$tmp_dir/source.sh
+    local tmp_target=$tmp_dir/target.sh
+
+    local needs_normalization=`grep -E $FUNCTION_PATTERN $script | grep "^__"`
+
+
+    #If an alias has been specified....
     if [ "$2" == "as" ] && [ -n "$3" ]; then
-        local prefix=$3
-        local source=`basename $script | cut -d "." -f1`
-        local dir=`dirname $script`
-        local target="$dir/${source}_as_$prefix.sh"
-        local intermediate=$(mktemp -d grab-alias.XXXXXXXX)/$prefix.sh
-        cp $1 $target
-        grep -E '^[[:space:]]*([[:alnum:]_]+[[:space:]]*\(\)|function[[:space:]]+[[:alnum:]_]+)' $target | grep -v "::" | cut -d "{" -f1 | cut -d "(" -f1 | sed "s/^[ ]*function //g" | while read f; do
-            cat $target | sed "s/\b$f\b/$prefix::$f/g" > $intermediate
-            cat $intermediate > $target
-        done
-        echo $target
-    else
-        echo $1
+        prefix=$3
+        separator="::"
+        target="$dir/${source}_as_$prefix.sh"
+    elif [ -n "$needs_normalization" ]; then
+        target="$dir/${source}_normalized.sh"
     fi
+
+    cp $script $tmp_source
+    cp $script $tmp_target
+
+    grep -E $FUNCTION_PATTERN $tmp_source | grep -v "::" | cut -d "{" -f1 | cut -d "(" -f1 | sed "s/^[ ]*function //g" | while read func; do
+        cat $tmp_source | sed "s/\b$func\b/$prefix$separator$func/g" > $tmp_target
+        cp $tmp_target $tmp_source
+        local normalized=`echo $func | sed "s/^__//g"`
+        if [ "$normalized" != "$func" ]; then
+            cat $tmp_source | sed "s/$func/$normalized/g" > $tmp_target
+            cp $tmp_target $tmp_source
+        fi
+    done
+
+    cp $tmp_target $target
+    echo $target
 }
 
 
@@ -116,9 +140,9 @@ do_grab() {
     else
         #Clone the repository
         git clone -b $version --single-branch $clone_url $shellib_home/$organization/$repository/$version > /dev/null 2> /dev/null
-	pushd $version
+        pushd $version
         translate_as $(find_library_path $path) $2 $3
-	popd
+        popd
     fi
 }
 

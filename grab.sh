@@ -63,6 +63,26 @@ find_library_path() {
     popd
 }
 
+translate_as() {
+    local script=$1
+    if [ "$2" == "as" ] && [ -n "$3" ]; then
+        local prefix=$3
+        local source=`basename $script | cut -d "." -f1`
+        local dir=`dirname $script`
+        local target="$dir/${source}_as_$prefix.sh"
+        local intermediate=$(mktemp -d grab-alias.XXXXXXXX)/$prefix.sh
+        cp $1 $target
+        grep -E '^[[:space:]]*([[:alnum:]_]+[[:space:]]*\(\)|function[[:space:]]+[[:alnum:]_]+)' $target | grep -v "::" | cut -d "{" -f1 | cut -d "(" -f1 | sed "s/^[ ]*function //g" | while read f; do
+            cat $target | sed "s/\b$f\b/$prefix::$f/g" > $intermediate
+            cat $intermediate > $target
+        done
+        echo $target
+    else
+        echo $1
+    fi
+}
+
+
 # Utils
 pushd () {
     command pushd "$@" > /dev/null
@@ -74,14 +94,15 @@ popd () {
 
 do_grab() {
     # Command execution
-    host=$(find_host $1)
-    organization=$(find_organization $1)
-    repository=$(find_repository $1)
-    version=$(find_version $1)
-    path=$(find_path $1)
-    clone_url=$(to_clone_url $host $organization $repository)
+    local host=$(find_host $1)
+    local organization=$(find_organization $1)
+    local repository=$(find_repository $1)
+    local version=$(find_version $1)
+    local path=$(find_path $1)
+    local clone_url=$(to_clone_url $host $organization $repository)
 
-    shellib_home=${SHELLIB_HOME:=$HOME/.shellib}
+    local shellib_home=${SHELLIB_HOME:=$HOME/.shellib}
+
 
     mkdir -p $shellib_home/$organization/$repository
     pushd $shellib_home/$organization/$repository
@@ -90,18 +111,18 @@ do_grab() {
         # If version branch already exists, just rebase
         pushd $version
         git pull --rebase origin $version > /dev/null 2> /dev/null
-        echo $(find_library_path $path)
+        translate_as $(find_library_path $path) $2 $3
         popd
     else
         #Clone the repository
         git clone -b $version --single-branch $clone_url $shellib_home/$organization/$repository/$version > /dev/null 2> /dev/null
-	      pushd $version
-        echo $(find_library_path $path)
-	      popd
+	pushd $version
+        translate_as $(find_library_path $path) $2 $3
+	popd
     fi
 }
 
 #Only run grab if script is not sourced (for unit test shake)
 if [ -n "$1" ]; then
-    do_grab $1
+    do_grab $*
 fi

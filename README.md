@@ -7,6 +7,7 @@ A simple tool that allows you to grab and reuse shell libraries from git reposit
 - Loading shell libraries
 - Caching / Refreshing libraries
 - Multiple version support
+- Aliasing
 
 ### What is a shell library?
 
@@ -46,3 +47,19 @@ Using curl:
 or using wget:
 
     wget -q -O - https://raw.githubusercontent.com/shellib/grab/master/install.sh | bash
+
+# Aliasing
+
+The more scripts you grab, the more likely is to get into naming clashes. For example its likely two grabbed scripts to contain a function with the same name.
+This is something that one can encounter in most modern programming languages when importing, requiring etc. One common solution is to use an alias for the imported package.
+A similar technique has been added to this tool, that allows you to grab a library using a special alias, using the `as` keyword.
+
+    source $(grab <git repository> as <alias>)
+
+Then your code will be able to access all the functions provided by the library using the `<alias>::` prefix. Here's a real example:
+
+    source $(grab <github.com/shellib/cli as cli)
+    
+In order to access the `hasflag` function you now need to use `cli::hasflag`.
+
+Note: Using the `::` as a separator between the alias and the function is convention and not a language feature. The particular convention is influenced by [Roland Huss](https://github.com/rhuss) coding style.

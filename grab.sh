@@ -132,11 +132,13 @@ do_grab() {
     pushd $shellib_home/$host/$organization/$repository
 
     if [ -d $version ]; then
-        # If version branch already exists, just rebase
-        pushd $version
-        git pull --rebase origin $version > /dev/null 2> /dev/null
-        translate_as $(find_library_path $path) $2 $3
-        popd
+        if [ "master" == "$version" ]; then
+            # If version branch already exists, just rebase
+            pushd $version
+            git pull --rebase origin $version > /dev/null 2> /dev/null
+            translate_as $(find_library_path $path) $2 $3
+            popd
+        fi
     else
         #Clone the repository
         git clone -b $version --single-branch $clone_url $shellib_home/$host/$organization/$repository/$version > /dev/null 2> /dev/null

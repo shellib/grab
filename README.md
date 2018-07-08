@@ -30,7 +30,7 @@ Where the git repository format is: `<host>/<organization>/<repository>/<path>@<
 
 This will clone the library under `$HOME/.shelllib/<organization>/<repository>/<version>` and import it to your script.
         
-### Usage Example:        
+### Usage Example:
 
 For example to load the `shellib cli library` from github:
 
@@ -58,7 +58,7 @@ A similar technique has been added to this tool, that allows you to grab a libra
 
 Then your code will be able to access all the functions provided by the library using the `<alias>::` prefix. Here's a real example:
 
-    source $(grab <github.com/shellib/cli as cli)
+    source $(grab github.com/shellib/cli as cli)
     
 In order to access the `hasflag` function you now need to use `cli::hasflag`.
 

@@ -84,9 +84,11 @@ translate_as() {
     if [ "$2" == "as" ] && [ -n "$3" ]; then
         prefix=$3
         separator="::"
-        target="$dir/${source}_as_$prefix.sh"
+        mkdir -p $dir/.alias/$source
+        target="$dir/.alias/${source}/$prefix.sh"
     elif [ -n "$needs_normalization" ]; then
-        target="$dir/${source}_normalized.sh"
+        mkdir -p $dir/.normalized
+        target="$dir/.normalized/${source}.sh"
     fi
 
     cp $script $tmp_source

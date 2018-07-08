@@ -128,8 +128,8 @@ do_grab() {
     local shellib_home=${SHELLIB_HOME:=$HOME/.shellib}
 
 
-    mkdir -p $shellib_home/$organization/$repository
-    pushd $shellib_home/$organization/$repository
+    mkdir -p $shellib_home/$host/$organization/$repository
+    pushd $shellib_home/$host/$organization/$repository
 
     if [ -d $version ]; then
         # If version branch already exists, just rebase
@@ -139,7 +139,7 @@ do_grab() {
         popd
     else
         #Clone the repository
-        git clone -b $version --single-branch $clone_url $shellib_home/$organization/$repository/$version > /dev/null 2> /dev/null
+        git clone -b $version --single-branch $clone_url $shellib_home/$host/$organization/$repository/$version > /dev/null 2> /dev/null
         pushd $version
         translate_as $(find_library_path $path) $2 $3
         popd

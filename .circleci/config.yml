@@ -6,6 +6,8 @@ jobs:
     steps:
       - checkout
       - run: ./install_test.sh
+      - run: ./install.sh
+      - run: ./grab_test.sh
 workflows:
   version: 2
   build_and_test:

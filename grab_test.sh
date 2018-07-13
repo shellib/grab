@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 source ./grab.sh
 
 TMP_DIR=`mktemp -d -p /tmp/`

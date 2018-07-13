@@ -1,12 +1,12 @@
 #!/bin/bash
 
+set -e
 source ./install.sh
 
 TMP_DIR=`mktemp -d -p /tmp/`
 trap 'cleanup' EXIT
 
 cleanup() {
-    rm -rf $TMPFILE
     rm -rf $TMP_DIR
 }
 

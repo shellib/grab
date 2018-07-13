@@ -21,6 +21,11 @@ test_download() {
 }
 
 test_grab() {
+    if !  $(type git &> /dev/null); then
+       echo "git binary is missing, skipping test_grab"
+       exit 0
+    fi
+    
     local libfile=$(./grab.sh github.com/shellib/cli)
     if [ ! -f $libfile ]; then
         echo "Grabbed library file not found!"

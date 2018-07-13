@@ -11,15 +11,12 @@ cleanup() {
 }
 
 test_download() {
-    download $GRAB_URL $TMPFILE/test
-    if [ ! -f $TMPFILE/test ]; then
-        download $GRAB_URL $TMP_DIR/grab
-        if [ ! -f $TMP_DIR/grab ]; then
-            echo "Downloaded file not found!"
-            exit 1
-        else
-            chmod +x $TMP_DIR/grab
-        fi
+    download $GRAB_URL $TMP_DIR/grab
+    if [ ! -f $TMP_DIR/grab ]; then
+        echo "Downloaded file not found!"
+        exit 1
+    else
+        chmod +x $TMP_DIR/grab
     fi
 }
 

@@ -5,6 +5,7 @@ jobs:
       - image: centos:7
     steps:
       - checkout
+      - run:  yum install git
       - run: ./install_test.sh
       - run: ./install.sh
       - run: ./grab_test.sh

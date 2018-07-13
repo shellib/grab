@@ -21,7 +21,7 @@ test_download() {
 }
 
 test_grab() {
-    local libfile=$($TMP_DIR/grab github.com/shellib/cli)
+    local libfile=$(./grab.sh github.com/shellib/cli)
     if [ ! -f $libfile ]; then
         echo "Grabbed library file not found!"
         exit 1

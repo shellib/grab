@@ -67,10 +67,19 @@ test_find_version() {
 	assert_equals "5.0.0" $(find_version "github.com/my-org/my-repo@5.0.0")
 }
 
+test_find_library_path() {
+    mkdir -p $TMP_DIR/.tests/find_library_path/cli
+    pushd  $TMP_DIR/.tests/find_library_path/cli
+    touch library.sh
+    assert_equals "$TMP_DIR/.tests/find_library_path/cli/library.sh" $(find_library_path ".")
+    popd
+}
+
 test_find_host
 test_find_version
 test_find_organization
 test_find_repository
 test_find_path
+test_find_library_path
 
 echo "Grab tests completed successfully!"
